@@ -21,5 +21,5 @@ k = cv2.waitKey(0)&0xff
 if k == 27:
     cv2.destroyAllWindows()
 elif k == ord('s'):
-    cv.imwrite('1.png',img)
+    cv2.imwrite('1.png',img)
     cv2.destroyAllWindows()
