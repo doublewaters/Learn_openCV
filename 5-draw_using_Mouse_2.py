@@ -19,11 +19,10 @@ def draw_circle(event,x,y,flags,param):
     elif event==cv2.EVENT_MOUSEMOVE and flags==cv2.EVENT_FLAG_LBUTTON: 
         if drawing==True: 
             if mode==True: 
-                
-                    cv2.rectangle(img,(ix,iy),(x,y),(0,255,0),-1) 
-                    
-                
-                    cv2.rectangle(img,(ix,iy),(x,y),(255,0,255),-1)
+            
+                cv2.rectangle(img,(ix,iy),(x,y),(0,255,0),-1)         
+             
+                cv2.rectangle(img,(ix,iy),(x,y),(255,0,255),-1)
                     
             else: 
                 # 绘制圆圈，小圆点连在一起就成了线， 3 代表了笔画的粗细 
