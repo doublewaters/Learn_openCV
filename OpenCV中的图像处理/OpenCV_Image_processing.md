@@ -16,7 +16,7 @@ HSL即色相、饱和度、亮度（英语：Hue, Saturation, Lightness）。HSV
 ![img]( https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Hsl-hsv_models.svg/800px-Hsl-hsv_models.svg.png 'img')
 
 我们要用到的函数是：cv2.cvtColor(input_image，ﬂag)，其中ﬂag 就是转换类型。
-对于BGR↔Gray的转换，我们要使用的ﬂag就是cv2.COLOR_BGR2GRAY。 同样对于BGR↔HSV的转换，我们用的ﬂag就是cv2.COLOR_BGR2HSV。 你还可以通过下面的命令得到所有可用的ﬂag。
+对于BGR↔Gray的转换，我们要使用的ﬂag就是cv2.COLOR_BGR2GRAY。同样对于BGR↔HSV的转换，我们用的ﬂag就是cv2.COLOR_BGR2HSV。你还可以通过下面的命令得到所有可用的ﬂag。
 ```
 import cv2 
 flags=[i for in dir(cv2) if i startswith('COLOR_')]
@@ -68,4 +68,40 @@ cv2.destroyAllWindows()
 ### 1.3怎样找到要跟踪对象的 HSV 值？
 
 这是我在stackoverﬂow.com上遇到的最普遍的问题。其实这真的很简单， 函数 cv2.cvtColor() 也可以用到这里。但是现在你要传入的参数是（你想要 的）BGR 值而不是一副图。
+>**从RGB到HSL或HSV的转换**
+>
+>设 (r, g, b)分别是一个颜色的红、绿和蓝坐标，它们的值是在0到1之间的实数。设max等价于r, g和b中的最大者。设min等于这些值中的最小者。要找到在HSL空间中的 (h, s, l)值，这里的h ∈ [0, 360）度是角度的色相角，而s, l ∈ [0,1]是饱和度和亮度，计算为：
+>$$h=\left\{\begin{array}{ll}
+0^{\circ} & \text { if } \max =\min \\
+60^{\circ} \times \frac{g-b}{\max -\min }+0^{\circ}, & \text { if } \max =r \text { and } g \geq b \\
+60^{\circ} \times \frac{g-b}{\max -\min }+360^{\circ}, & \text { if } \max =r \text { and } g<b \\
+60^{\circ} \times \frac{b-r}{\max -\min }+120^{\circ}, & \text { if } \max =g \\
+60^{\circ} \times \frac{r-g}{\max -\min }+240^{\circ}, & \text { if } \max =b
+\end{array}\right.$$
+>$$s=\left\{\begin{array}{ll}
+0 & \text { if } l=0 \text { or } m a x=m i n \\
+\frac{m a x-m i n}{m a x+m i n}=\frac{m a x-m i n}{2 l}, & \text { if } 0<l \leq \frac{1}{2} \\
+\frac{m a x-m i n}{2-(m a x+m i n)}=\frac{m a x-m i n}{2-2 l}, & \text { if } l>\frac{1}{2}
+\end{array}\right.$$
+>$$l=\frac{1}{2}(\max +\min )$$
+>h的值通常规范化到位于0到360°之间。而h = 0用于max = min的（定义为灰色）时候而不是留下h未定义。
+HSL和HSV有同样的色相定义，但是其他分量不同。HSV颜色的s和v的值定义如下：
+>$$s=\left\{\begin{array}{ll}
+0, & \text { if } \max =0 \\
+\frac{\max -\min }{\max }=1-\frac{\min }{\max }, & \text { otherwise }
+\end{array}\right.$$
+>$$\boldsymbol{v}=\max$$
+
+
 例如，我们要找到绿色的HSV值，我们只需在终端输入以下命令：
+```
+import cv2
+import numpy as np
+ 
+color=np.uint8([[[66 ,99 ,44]]])
+hsv_color=cv2.cvtColor(color,cv2.COLOR_BGR2HSV)
+ 
+print(hsv_color)
+```
+
+
