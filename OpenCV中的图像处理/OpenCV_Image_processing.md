@@ -105,3 +105,56 @@ print(hsv_color)
 ```
 
 
+## 2.几何变换
+
+_目标：_
+* 学习对图像进行各种几个变换，例如移动，旋转，仿射变换等。 
+* 将要学到的函数有：cv2.getPerspectiveTransform。
+
+
+_变换_
+OpenCV提供了两个变换函数，cv2.warpAﬃne和cv2.warpPerspective， 使用这两个函数你可以实现所有类型的变换。cv2.warpAﬃne 接收的参数是 2×3 的变换矩阵，而 cv2.warpPerspective 接收的参数是 3×3 的变换矩 阵。
+___
+### 2.1 扩展缩放
+
+扩展缩放只是改变图像的尺寸大小。OpenCV 提供的函数 cv2.resize() 可以实现这个功能。图像的尺寸可以自己手动设置，你也可以指定缩放因子。我 们可以选择使用不同的插值方法。在缩放时我们推荐使用cv2.INTER_AREA， 在扩展时我们推荐使用 v2.INTER_CUBIC（慢) 和 v2.INTER_LINEAR。 默认情况下所有改变图像尺寸大小的操作使用的插值方法都是cv2.INTER_LINEAR。 你可以使用下面任意一种方法改变图像的尺寸：
+
+|interpolation选项|所用的插值方法|
+|:-------:|:------:|
+|INTER_NEAREST|最近邻插值|
+|INTER_LINEAR|双线性插值（默认设置）|
+|INTER_AREA|使用像素区域关系进行重采样。 它可能是图像抽取的首选方法，因为它会产生无云纹理的结果。 但是当图像缩放时，它类似于INTER_NEAREST方法。|
+|INTER_CUBIC|4x4像素邻域的双三次插值|
+|INTER_LANCZOS4|8x8像素邻域的Lanczos插值|
+
+代码如下：
+```
+import cv2 
+import numpy as np
+
+img = cv2.imread('0.jpg')
+# 方法一：
+# 下面的 None 本应该是输出图像的尺寸，但是因为后边我们设置了缩放因子 
+# 因此这里为 None 
+# res = cv2.resize(img,None,fx=2,fy=2,interpolation=cv2.INTER_CUBIC)
+# OR 
+# 这里呢，我们直接设置输出图像的尺寸，所以不用设置缩放因子 
+height,width = img.shape[:2] 
+res = cv2.resize(img,(2*width,2*height),interpolation=cv2.INTER_CUBIC)
+
+while(1): 
+    cv2.imshow('res',res) 
+    cv2.imshow('img',img)
+
+    if cv2.waitKey(1) & 0xFF == 27: 
+        break 
+cv2.destroyAllWindows()
+```
+### 2.2 平移
+平移就是将对象换一个位置。如果你要沿（x，y）方向移动，移动的距离是$\left(t_{x}, t_{y}\right)$，你可以以下面的方式构建移动矩阵： 
+$$M=\left[\begin{array}{lll}
+1 & 0 & t_{x} \\
+0 & 1 & t_{y}
+\end{array}\right]$$
+
+你可以使用 Numpy 数组构建这个矩阵（数据类型是 np.ﬂoat32），然 后把它传给函数 cv2.warpAﬃne()。
