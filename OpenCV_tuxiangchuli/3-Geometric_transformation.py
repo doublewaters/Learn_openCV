@@ -5,7 +5,7 @@ img = cv2.imread('2.png')
 
 
 # 下面的None本应该是输出图像的尺寸，但是因为后面我们设置了缩放因子，所以，这里为None
-res = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+#res = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 # or
 # 这里直接设置输出图像的尺寸，所以不用设置缩放因子
 height, width = img.shape[:2]
