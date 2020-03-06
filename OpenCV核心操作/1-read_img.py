@@ -3,7 +3,7 @@ import cv2
 
 #load a color image in grayscale
 #img = cv2.imread('0.jpg',0)         #灰度
-img = cv2.imread('0.jpg',1)         #彩色
+img = cv2.imread('./0.jpg',1)         #彩色
 # #提示：路径错误，不提示
 
 # #show a image 

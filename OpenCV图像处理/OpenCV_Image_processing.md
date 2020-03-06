@@ -158,3 +158,6 @@ $$M=\left[\begin{array}{lll}
 \end{array}\right]$$
 
 你可以使用 Numpy 数组构建这个矩阵（数据类型是 np.ﬂoat32），然 后把它传给函数 cv2.warpAﬃne()。
+```
+M = np.array([[1, 0,t_x], [0, 1, t_y]], dtype=np.float32)
+```
