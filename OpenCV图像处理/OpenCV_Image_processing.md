@@ -104,7 +104,9 @@ hsv_color=cv2.cvtColor(color,cv2.COLOR_BGR2HSV)
 print(hsv_color)
 ```
 
+## 2.几何变换
 
+<<<<<<< HEAD:OpenCV图像处理/OpenCV_Image_processing.md
 ## 2.几何变换
 
 _目标：_
@@ -253,3 +255,33 @@ plt.show()
 结果如下图：
 ![img](7.png '透视变换')
 
+=======
+_目标:_ 
+* 学习对图像进行各种几个变换,例如移动,旋转,仿射变换等。 
+* 将要学到的函数有:cv2.getPerspectiveTransform。
+***
+_变换_
+> OpenCV 提供了两个变换函数, cv2.warpAffine 和cv2.warpPerspective,使用这两个函数你可以实现所有类型的变换。cv2.warpAffine 接收的参数是2 × 3 的变换矩阵,而cv2.warpPerspective 接收的参数是 3 × 3 的变换矩阵。
+
+### 2.1扩展缩放
+扩展缩放只是改变图像的尺寸大小。OpenCV 提供的函数 cv2.resize()可以实现这个功能。图像的尺寸可以自己手动设置,你也可以指定缩放因子。我们可以选择使用不同的插值方法。在缩放时我们推荐使用 cv2.INTER_AREA,在扩展时我们推荐使用 v2.INTER_CUBIC(慢) 和 v2.INTER_LINEAR。默认情况下所有改变图像尺寸大小的操作使用的插值方法都是 cv2.INTER_LINEAR。你可以使用下面任意一种方法改变图像的尺寸:
+
+```
+import cv2
+import numpy as np
+img=cv2.imread('messi5.jpg')
+# 下面的 None 本应该是输出图像的尺寸,但是因为后边我们置了缩放因子
+# 因此这里为 None
+res=cv2.resize(img,None,fx=2,fy=2,interpolation=cv2.INTER_CUBIC)
+#OR
+# 这里呢,我们直接设置输出图像的尺寸,所以不用设置缩放因子
+height,width=img.shape[:2]
+res=cv2.resize(img,(2*width,2*height),interpolation=cv2.INTER_CUBIC)
+while(1):
+    cv2.imshow('res',res)
+    cv2.imshow('img',img)
+    if cv2.waitKey(1) & 0xFF == 27:
+        break
+cv2.destroyAllWindows()
+```
+>>>>>>> c36c7574219ed6cca0f3c87666aa2ea8b33e0c26:OpenCV中的图像处理/OpenCV_Image_processing.md
