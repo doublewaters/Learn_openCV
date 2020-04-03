@@ -161,3 +161,95 @@ $$M=\left[\begin{array}{lll}
 ```
 M = np.array([[1, 0,t_x], [0, 1, t_y]], dtype=np.float32)
 ```
+
+
+>警告：函数 cv2.warpAﬃne() 的第三个参数的是输出图像的大小，它的格式应该是图像的（宽，高）。应该记住的是图像的宽对应的是列数，高对应的是行数。
+```
+import numpy as np
+import cv2
+
+img = cv2.imread('1.jpg')
+cv2.imshow('img',img)
+# 平移矩阵[[1, 0, 100], [0, 1, 100]]
+M = np.array([[1, 0, 100], [0, 1, 100]], dtype=np.float32)
+img_change = cv2.warpAffine(img, M, (1024,768))
+cv2.imshow('res', img_change)
+cv2.waitKey(0)
+```
+### 2.3 旋转
+对一个图像旋转角度 θ, 需要使用到下面形式的旋转矩阵。
+![](https://cdn.mathpix.com/snip/images/BahBR7fIvbiUgoUI1BVmc_KxG5LJPyoQvokGMbpUjcA.original.fullsize.png) 
+
+但是 OpenCV 允许你在任意地方进行旋转，但是旋转矩阵的形式应该修改为
+![](https://cdn.mathpix.com/snip/images/v-757zMoK4B5Q9vQC7TcpAb7ay0hAxBM6u5yIh16U30.original.fullsize.png)
+其中：
+![](https://cdn.mathpix.com/snip/images/tHvxvHqznv4myM7ym5fiStBxz5VfE14_yxBq26-suSY.original.fullsize.png)
+
+
+为了构建这个旋转矩阵，OpenCV提供了一个函数：cv2.getRotationMatrix2D。 下面的例子是在不缩放的情况下将图像旋转45度。
+```
+import cv2 
+import numpy as np
+
+img=cv2.imread('1.jpg',0)
+rows,cols=img.shape
+#这里的第一个参数为旋转中心，第二个为旋转角度，第三个为旋转后的缩放因子
+#可以通过设置旋转中心，缩放因子，以及窗口大小来防止旋转后超出边界的问题
+M=cv2.getRotationMatrix2D((cols/2,rows/2),45,0.6)
+#第三个参数是输出图像的尺寸中心 
+dst=cv2.warpAffine(img,M,(2*cols,2*rows)) 
+while(1): 
+    cv2.imshow('img',dst) 
+    if cv2.waitKey(1)&0xFF==27: 
+        break
+cv2.destroyAllWindows()
+```
+### 2.4 仿射变换
+
+在仿射变换中，原图中所有的平行线在结果图像中同样平行。为了创建这个矩阵我们需要从原图像中找到三个点以及他们在输出图像中的位置。然后cv2.getAﬃneTransform 会创建一个2x3的矩阵，最后这个矩阵会被传给函数cv2.warpAﬃne。
+
+标记的点为蓝色
+
+```
+import cv2 
+import numpy as np 
+from matplotlib import pyplot as plt
+
+img=cv2.imread('4.png') 
+rows,cols,ch=img.shape
+pts1=np.float32([[100,100],[200,100],[50,450]])
+pts2=np.float32([[50,50],[150,50],[100,500]])
+M=cv2.getAffineTransform(pts1,pts2)
+dst=cv2.warpAffine(img,M,(cols,rows))
+plt.subplot(121),plt.imshow(img),plt.title('Input')
+plt.subplot(122),plt.imshow(dst),plt.title('Output')
+plt.show()
+```
+
+结果如下图：
+![img](5.png '仿射变换')
+
+### 2.5透视变换 
+
+对于视角变换，我们需要一个 3x3 变换矩阵。在变换前后直线还是直线。 要构建这个变换矩阵，你需要在输入图像上找 4 个点，以及他们在输出图 像上对应的位置。这四个点中的任意三个都不能共线。这个变换矩阵可以有 函数 cv2.getPerspectiveTransform() 构建。然后把这个矩阵传给函数 cv2.warpPerspective。 
+
+```
+import cv2 
+import numpy as np 
+from matplotlib import pyplot as plt
+
+img=cv2.imread('6.png') 
+rows,cols,ch=img.shape
+
+pts1 = np.float32([[15,38],[342,44],[40,394],[374,361]]) 
+pts2 = np.float32([[0,0],[300,0],[0,300],[300,300]])
+M=cv2.getPerspectiveTransform(pts1,pts2)
+dst=cv2.warpPerspective(img,M,(300,300))
+
+plt.subplot(121),plt.imshow(img),plt.title('Input')
+plt.subplot(122),plt.imshow(dst),plt.title('Output')
+plt.show()
+```
+结果如下图：
+![img](7.png '透视变换')
+
